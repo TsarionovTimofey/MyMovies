@@ -27,31 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchTypeOfTop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewPopularity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/most_popular"
-            app:layout_constraintBottom_toBottomOf="@+id/switchTypeOfTop"
-            app:layout_constraintEnd_toStartOf="@+id/switchTypeOfTop"
-            app:layout_constraintTop_toTopOf="@+id/switchTypeOfTop" />
-
-        <TextView
-            android:id="@+id/textViewTop250"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/top_rated"
-            app:layout_constraintBottom_toBottomOf="@+id/switchTypeOfTop"
-            app:layout_constraintStart_toEndOf="@+id/switchTypeOfTop"
-            app:layout_constraintTop_toTopOf="@+id/switchTypeOfTop" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewPosters"
@@ -60,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchTypeOfTop" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
