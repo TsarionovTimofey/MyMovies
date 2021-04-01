@@ -1,5 +1,7 @@
 package com.example.mymovies.utils;
 
+import android.util.Log;
+
 import com.example.mymovies.data.Movie;
 
 import org.json.JSONArray;
@@ -39,15 +41,29 @@ public class JSONUtils {
                 JSONObject objectFilmForTop = jsonArrayTOPFilms.getJSONObject(i);
                 int filmId = objectFilmForTop.getInt(KEY_FILM_ID);
                 String nameRu = objectFilmForTop.getString(KEY_NAME_EN);
-//                String rating = objectFilmForTop.getString(KEY_RATING);
+                String ratingString = objectFilmForTop.getString(KEY_RATING);
+                double rating = ratingStringToRating(ratingString);
                 String posterUrlPreview = objectFilmForTop.getString(KEY_POSTER_URL_PREVIEW);
-                Movie movieForTop = new Movie(filmId, nameRu, posterUrlPreview);
+                Movie movieForTop = new Movie(filmId, nameRu, posterUrlPreview, rating);
                 result.add(movieForTop);
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private static double ratingStringToRating(String ratingString) {
+        double rating;
+        try {
+            rating = Double.parseDouble(ratingString);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            ratingString.replaceAll("%", "");
+            rating = 0;
+        }
+        return rating;
     }
 
     public static ArrayList<Movie> getFilmDetailsFromJSON(JSONObject jsonObject) {

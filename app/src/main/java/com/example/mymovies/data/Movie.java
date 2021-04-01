@@ -15,10 +15,11 @@ public class Movie {
     private String facts;
     private String premiereWorld;
 
-    public Movie(int filmId, String nameRu, String posterUrlPreview) {
+    public Movie(int filmId, String nameRu, String posterUrlPreview, double rating) {
         this.filmId = filmId;
         this.nameRu = nameRu;
         this.posterUrlPreview = posterUrlPreview;
+        this.rating = rating;
     }
 
     public Movie(int filmId, String nameRu, String nameEn, int year,
