@@ -1,6 +1,12 @@
 package com.example.mymovies.data;
 
-public class Movie {
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "moviesDetailed")
+public class MovieDetailed {
+    @PrimaryKey
     private int filmId;
     private String nameRu;
     private String nameEn;
@@ -14,29 +20,6 @@ public class Movie {
     private String description;
     private String facts;
     private String premiereWorld;
-
-    public Movie(int filmId, String nameRu, String posterUrlPreview, double rating) {
-        this.filmId = filmId;
-        this.nameRu = nameRu;
-        this.posterUrlPreview = posterUrlPreview;
-        this.rating = rating;
-    }
-
-    public Movie(int filmId, String nameRu, String nameEn, int year,
-                 String filmLength, String posterUrl, double rating,
-                 int ratingVoteCount, String description, String facts, String premiereWorld) {
-        this.filmId = filmId;
-        this.nameRu = nameRu;
-        this.nameEn = nameEn;
-        this.year = year;
-        this.filmLength = filmLength;
-        this.posterUrl = posterUrl;
-        this.rating = rating;
-        this.ratingVoteCount = ratingVoteCount;
-        this.description = description;
-        this.facts = facts;
-        this.premiereWorld = premiereWorld;
-    }
 
     public int getFilmId() {
         return filmId;
@@ -131,6 +114,21 @@ public class Movie {
     }
 
     public void setPremiereWorld(String premiereWorld) {
+        this.premiereWorld = premiereWorld;
+    }
+
+    public MovieDetailed(int filmId, String nameRu, String nameEn, int year, String filmLength, String posterUrl, String posterUrlPreview, double rating, int ratingVoteCount, String description, String facts, String premiereWorld) {
+        this.filmId = filmId;
+        this.nameRu = nameRu;
+        this.nameEn = nameEn;
+        this.year = year;
+        this.filmLength = filmLength;
+        this.posterUrl = posterUrl;
+        this.posterUrlPreview = posterUrlPreview;
+        this.rating = rating;
+        this.ratingVoteCount = ratingVoteCount;
+        this.description = description;
+        this.facts = facts;
         this.premiereWorld = premiereWorld;
     }
 }

@@ -1,7 +1,13 @@
 package com.example.mymovies.utils;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.content.AsyncTaskLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 
 public class NetworkUtils {
     private static final String API_KEY = "43f6a6b8-ba52-4f25-9ece-9a4663385aad";
-
     private static final String BASE_URL_FOR_TOP =
             "https://kinopoiskapiunofficial.tech/api/v2.2/films/top";
     private static final String TYPE_OF_TOP_100_POPULAR = "TOP_100_POPULAR_FILMS";
@@ -32,6 +37,9 @@ public class NetworkUtils {
 
     private static final String BASE_URL_FOR_FILM_DETAILS =
             "https://kinopoiskapiunofficial.tech/api/v2.1/films";
+
+    private static final String BASE_URL_REVIEWS =
+            "https://kinopoiskapiunofficial.tech/api/v1/reviews";
 
     private static URL buildURLTypeOfTop(int intTypeOfTop, int page) {
         URL result = null;
@@ -61,7 +69,7 @@ public class NetworkUtils {
         return result;
     }
 
-    private static URL buildURLFilmsDetail(int filmId) {
+    private static URL buildURLDetail(int filmId) {
         URL result = null;
         Uri uri = Uri.parse(BASE_URL_FOR_FILM_DETAILS).buildUpon()
                 .appendPath(Integer.toString(filmId))
@@ -75,14 +83,40 @@ public class NetworkUtils {
         return result;
     }
 
+    private static URL buildURLVideos(int filmId) {
+        URL result = null;
+        Uri uri = Uri.parse(BASE_URL_FOR_FILM_DETAILS).buildUpon()
+                .appendPath(Integer.toString(filmId))
+                .appendPath("videos")
+                .build();
+        try {
+            result = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private static URL buildURLReviews(int filmId) {
+        URL result = null;
+        Uri uri = Uri.parse(BASE_URL_REVIEWS).buildUpon()
+                .appendQueryParameter("filmId", Integer.toString(filmId))
+                .appendQueryParameter("page", Integer.toString(1))
+                .build();
+        try {
+            result = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static JSONObject getJSONFromNetworkTopDownload(int chooserTypeOfTop, int page) {
         JSONObject result = null;
         URL url = buildURLTypeOfTop(chooserTypeOfTop, page);
         try {
-            result = new JSONLoadTaskTopDownload().execute(url).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            result = new JSONLoadTaskDownload().execute(url).get();
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return result;
@@ -90,28 +124,73 @@ public class NetworkUtils {
 
     public static JSONObject getJSONFromNetworkFilmDetailDownload(int filmId) {
         JSONObject result = null;
-        URL url = buildURLFilmsDetail(filmId);
+        URL url = buildURLDetail(filmId);
         try {
-            result = new JSONLoadTaskTFilmDetailDownload().execute(url).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            result = new JSONLoadTaskDownload().execute(url).get();
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    private static class JSONLoadTaskTopDownload extends AsyncTask<URL, Void, JSONObject> {
+    public static JSONObject getJSONFromNetworkFilmVideosDownload(int filmId) {
+        JSONObject result = null;
+        URL url = buildURLVideos(filmId);
+        try {
+            result = new JSONLoadTaskDownload().execute(url).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static JSONObject getJSONFromNetworkReviewsDownload(int filmId) {
+        JSONObject result = null;
+        URL url = buildURLReviews(filmId);
+        try {
+            result = new JSONLoadTaskDownload().execute(url).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    public static class JSONLoader extends AsyncTaskLoader<JSONObject> {
+
+        private Bundle bundle;
+
+        public JSONLoader(@NonNull Context context, Bundle bundle) {
+            super(context);
+            this.bundle = bundle;
+        }
 
         @Override
-        protected JSONObject doInBackground(URL... urls) {
+        protected void onStartLoading() {
+            super.onStartLoading();
+            forceLoad();
+        }
+
+        @Nullable
+        @Override
+        public JSONObject loadInBackground() {
+            if (bundle == null) {
+                return null;
+            }
+            String urlString = bundle.getString("url");
+            URL url = null;
+            try {
+                url = new URL(urlString);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
             JSONObject result = null;
-            if (urls == null || urls.length == 0) {
-                return result;
+            if (url == null) {
+                return null;
             }
             HttpURLConnection httpURLConnection = null;
             try {
-                httpURLConnection = (HttpURLConnection) urls[0].openConnection();
+                httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestProperty("accept", "application/json");
                 httpURLConnection.setRequestProperty("X-API-KEY", API_KEY);
                 InputStream inputStream = httpURLConnection.getInputStream();
@@ -136,7 +215,7 @@ public class NetworkUtils {
         }
     }
 
-    private static class JSONLoadTaskTFilmDetailDownload extends AsyncTask<URL, Void, JSONObject> {
+    private static class JSONLoadTaskDownload extends AsyncTask<URL, Void, JSONObject> {
 
         @Override
         protected JSONObject doInBackground(URL... urls) {

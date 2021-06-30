@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyMovies">
         <activity android:name=".FavoriteActivity"></activity>
-        <activity android:name=".DatailActivity" />
+        <activity android:name=".DetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

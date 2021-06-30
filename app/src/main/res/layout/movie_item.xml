@@ -5,7 +5,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="270dp"
         android:layout_margin="4dp">
 
         <ImageView
@@ -26,6 +26,15 @@
             android:paddingEnd="4dp"
             android:paddingBottom="1dp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageViewIsFavourite"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="4dp"
+            />
+
 
     </androidx.cardview.widget.CardView>
 </FrameLayout>

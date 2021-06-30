@@ -1,6 +1,7 @@
-package com.example.mymovies;
+package com.example.mymovies.adapters;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,36 +11,33 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mymovies.data.Movie;
+import com.example.mymovies.R;
+import com.example.mymovies.data.FavouriteMovie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class FavouriteMovieAdapter extends RecyclerView.Adapter<FavouriteMovieAdapter.MovieViewHolder> {
 
-    private ArrayList<Movie> movies;
-    private TextView rating;
+    private List<FavouriteMovie> favouriteMovies;
     private OnPosterClickListener onPosterClickListener;
     private OnReachEndListener onReachEndListener;
 
-    public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
-        this.onReachEndListener = onReachEndListener;
+    public FavouriteMovieAdapter() {
+        this.favouriteMovies = new ArrayList<>();
     }
 
-    public MovieAdapter() {
-        movies = new ArrayList<>();
-    }
-
-    interface OnPosterClickListener {
+    public interface OnPosterClickListener {
         void onPosterClick(int position);
-    }
-
-    interface OnReachEndListener {
-        void onReachEnd();
     }
 
     public void setOnPosterClickListener(OnPosterClickListener onPosterClickListener) {
         this.onPosterClickListener = onPosterClickListener;
+    }
+
+    interface OnReachEndListener {
+        void onReachEnd();
     }
 
     @NonNull
@@ -51,28 +49,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        if (position > movies.size() - 4 && onReachEndListener != null) {
+        if (position > favouriteMovies.size() - 2 && onReachEndListener != null) {
             onReachEndListener.onReachEnd();
         }
-        Movie movie = movies.get(position);
-        Picasso.get().load(movie.getPosterUrlPreview()).into(holder.imageViewSmallPoster);
-        double ratings = movie.getRating();
-        rating.setText(ratings + "");
-        if (ratings < 5) {
-            rating.setTextColor(Color.RED);
+        FavouriteMovie favouriteMovie = favouriteMovies.get(position);
+        Picasso.get().load(favouriteMovie.getPosterUrl()).into(holder.imageViewSmallPoster);
+        double rating = favouriteMovie.getRating();
+        holder.rating.setText(Double.toString(rating));
+        if (rating < 5) {
+            holder.rating.setTextColor(Color.RED);
         } else {
-            rating.setTextColor(Color.parseColor("#008500"));
+            holder.rating.setTextColor(Color.parseColor("#008500"));
         }
     }
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        return favouriteMovies.size();
     }
+
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageViewSmallPoster;
+        private TextView rating;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,17 +89,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 
-    public ArrayList<Movie> getMovies() {
-        return movies;
-    }
-
-    public void addMovies(ArrayList<Movie> movies) {
-        this.movies.addAll(movies);
+    public void addFavouriteMovies(List<FavouriteMovie> favouriteMovies) {
+        this.favouriteMovies.addAll(favouriteMovies);
         notifyDataSetChanged();
     }
 
-    public void setMovies(ArrayList<Movie> movies) {
-        this.movies = movies;
+    public void setFavouriteMovies(List<FavouriteMovie> favouriteMovies) {
+        this.favouriteMovies = favouriteMovies;
         notifyDataSetChanged();
+        Log.i("TAG", favouriteMovies.get(0).getNameEn());
+    }
+
+    public List<FavouriteMovie> getFavouriteMovies() {
+        return favouriteMovies;
     }
 }
+
+
+
